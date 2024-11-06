@@ -1,11 +1,11 @@
 package main
 
 import (
-	"bytes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/template/html/v2"
-	"image/png"
+	"log/slog"
+	"time"
 )
 
 func FiberApp(cfg *Config, sm *StateManager, monnit *Monnit) *fiber.App {
@@ -34,21 +34,21 @@ func FiberApp(cfg *Config, sm *StateManager, monnit *Monnit) *fiber.App {
 
 	app.Get("/temperature.png", func(c *fiber.Ctx) error {
 		last := monnit.LastReading()
-		img, err := display.Image(last.Temperature.String(), last.MessageDate.String())
-		if err != nil {
-			return c.Status(500).SendString(err.Error())
-		}
 
-		var b []byte
-		buf := bytes.NewBuffer(b)
-		if err := png.Encode(buf, img); err != nil {
-			return c.Status(500).SendString(err.Error())
+		// Refresh image if stale
+		if display.NeedsUpdate(time.Time(last.MessageDate)) {
+			slog.Debug("Stale image", "update", display.lastUpdate, "current", time.Time(last.MessageDate))
+			err := display.Refresh(last)
+			if err != nil {
+				slog.Warn("Unable to refresh image", "error", err)
+				return c.Status(500).SendString(err.Error())
+			}
 		}
 
 		sm.IncrementImageRequests()
 		c.Set("Cache-Control", "no-cache")
 		c.Set("Content-Type", "image/png")
-		return c.Send(buf.Bytes())
+		return c.Send(display.GetImageBytes())
 
 	})
 
