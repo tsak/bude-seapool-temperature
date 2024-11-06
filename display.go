@@ -79,7 +79,7 @@ func (d *Display) generateImage(temperature, lastModified string) (image.Image, 
 
 	// Temperature display
 	dc.SetRGB(0, 0, 0)
-	if err := dc.LoadFontFace("fonts/Roboto-Regular.ttf", 500); err != nil {
+	if err := dc.LoadFontFace("fonts/Roboto-Regular.ttf", 800); err != nil {
 		slog.Error("unable to load font: ", "error", err)
 		return nil, err
 	}
@@ -87,11 +87,11 @@ func (d *Display) generateImage(temperature, lastModified string) (image.Image, 
 
 	// Last updated
 	dc.SetRGB(0.5, 0.5, 0.5)
-	if err := dc.LoadFontFace("fonts/Roboto-LightItalic.ttf", 50); err != nil {
+	if err := dc.LoadFontFace("fonts/Roboto-LightItalic.ttf", 100); err != nil {
 		slog.Error("unable to load font: ", "error", err)
 		return nil, err
 	}
-	dc.DrawStringAnchored("Last updated "+lastModified, float64(d.width)/2, float64(d.height)-50, 0.5, 0.5)
+	dc.DrawStringAnchored("Last updated "+lastModified, float64(d.width)/2, float64(d.height)-100, 0.5, 0.5)
 
 	return dc.Image(), nil
 }
