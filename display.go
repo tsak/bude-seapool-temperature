@@ -58,6 +58,7 @@ func (d *Display) Refresh(last *SensorDataMessage) error {
 		return err
 	}
 
+	d.buffer.Reset()
 	err = png.Encode(d.buffer, img)
 	if err != nil {
 		return err
