@@ -170,5 +170,6 @@ func (m SensorDataMessage) LogValue() slog.Value {
 	return slog.GroupValue(
 		slog.Time("date", time.Time(m.MessageDate)),
 		slog.String("temperature", m.Temperature.String()),
+		slog.Int("signal_strength", m.SignalStrength),
 	)
 }
