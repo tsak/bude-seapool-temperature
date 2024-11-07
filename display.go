@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"github.com/fogleman/gg"
 	"image"
 	"image/png"
 	"log/slog"
@@ -13,18 +12,20 @@ import (
 // Display represents a display with width, height, buffer, and last update time.
 type Display struct {
 	sync.RWMutex
-	width      int
-	height     int
-	buffer     *bytes.Buffer
-	lastUpdate time.Time
+	width         int
+	height        int
+	buffer        *bytes.Buffer
+	lastUpdate    time.Time
+	generateImage func(width, height int, temperature, lastModified string) (image.Image, error)
 }
 
 // NewDisplay creates a new display with the specified width and height, initializing the display buffer.
-func NewDisplay(width, height int) *Display {
+func NewDisplay(width, height int, generateImage func(width, height int, temperature, lastModified string) (image.Image, error)) *Display {
 	return &Display{
-		width:  width,
-		height: height,
-		buffer: bytes.NewBuffer([]byte{}),
+		width:         width,
+		height:        height,
+		buffer:        bytes.NewBuffer([]byte{}),
+		generateImage: generateImage,
 	}
 }
 
@@ -53,7 +54,7 @@ func (d *Display) Refresh(last *SensorDataMessage) error {
 
 	slog.Debug("Refreshing image", "temperatur", last.Temperature.String(), "date_time", last.MessageDate.String())
 
-	img, err := d.generateImage(last.Temperature.String(), last.MessageDate.String())
+	img, err := d.generateImage(d.width, d.height, last.Temperature.String(), last.MessageDate.String())
 	if err != nil {
 		return err
 	}
@@ -67,32 +68,4 @@ func (d *Display) Refresh(last *SensorDataMessage) error {
 	d.lastUpdate = time.Time(last.MessageDate)
 
 	return nil
-}
-
-// generateImage creates an image with temperature and last modified text anchored in the center.
-// It requires temperature and lastModified strings as input, and returns the generated image.
-func (d *Display) generateImage(temperature, lastModified string) (image.Image, error) {
-	dc := gg.NewContext(d.width, d.height)
-
-	// White background
-	dc.SetRGB(1, 1, 1)
-	dc.Clear()
-
-	// Temperature display
-	dc.SetRGB(0, 0, 0)
-	if err := dc.LoadFontFace("fonts/Roboto-Regular.ttf", 800); err != nil {
-		slog.Error("unable to load font: ", "error", err)
-		return nil, err
-	}
-	dc.DrawStringAnchored(temperature, float64(d.width)/2, float64(d.height)/2, 0.5, 0.5)
-
-	// Last updated
-	dc.SetRGB(0.5, 0.5, 0.5)
-	if err := dc.LoadFontFace("fonts/Roboto-LightItalic.ttf", 100); err != nil {
-		slog.Error("unable to load font: ", "error", err)
-		return nil, err
-	}
-	dc.DrawStringAnchored("Last updated "+lastModified, float64(d.width)/2, float64(d.height)-100, 0.5, 0.5)
-
-	return dc.Image(), nil
 }
