@@ -3,7 +3,7 @@
 Read temperatures from an [iMonnit](https://www.imonnit.com/) temperature sensor embedded in the pool
 and generate an image for digital signage by the pool.
 
-![Example output](example.png)
+![Live temperature](https://spt.tsak.dev/temperature.png)
 
 ## Prerequisites
 
