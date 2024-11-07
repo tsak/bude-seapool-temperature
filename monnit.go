@@ -14,7 +14,7 @@ const DATE_FORMAT = "Mon, 02 Jan 2006 15:04:05"
 const CACHE_FILE = "monnit.json"
 
 type Monnit struct {
-	sync.Mutex
+	sync.RWMutex
 	sensorId     string
 	apiKeyId     string
 	apiSecretKey string
@@ -123,8 +123,8 @@ func (m *Monnit) LoadData() error {
 }
 
 func (m *Monnit) LastReading() *SensorDataMessage {
-	m.Lock()
-	defer m.Unlock()
+	m.RLock()
+	defer m.RUnlock()
 
 	if m.lastData == nil {
 		return &SensorDataMessage{}
