@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-// Display represents a display with width, height, buffer, and last update time.
-type Display struct {
+// ImageGenerator generates images for the set width and height, using its generateImage function
+type ImageGenerator struct {
 	sync.RWMutex
 	width         int
 	height        int
@@ -19,9 +19,9 @@ type Display struct {
 	generateImage func(width, height int, temperature, lastModified string) (image.Image, error)
 }
 
-// NewDisplay creates a new display with the specified width and height, initializing the display buffer.
-func NewDisplay(width, height int, generateImage func(width, height int, temperature, lastModified string) (image.Image, error)) *Display {
-	return &Display{
+// NewImageGenerator creates a new display with the specified width and height, initializing the display buffer.
+func NewImageGenerator(width, height int, generateImage func(width, height int, temperature, lastModified string) (image.Image, error)) *ImageGenerator {
+	return &ImageGenerator{
 		width:         width,
 		height:        height,
 		buffer:        bytes.NewBuffer([]byte{}),
@@ -30,42 +30,42 @@ func NewDisplay(width, height int, generateImage func(width, height int, tempera
 }
 
 // GetImageBytes returns the image data as a byte slice by reading from the display buffer.
-// It will be blocked while a call to [Display.Refresh] finishes
-func (d *Display) GetImageBytes() []byte {
-	d.RLock()
-	defer d.RUnlock()
+// It will be blocked while a call to [ImageGenerator.Refresh] finishes
+func (ig *ImageGenerator) GetImageBytes() []byte {
+	ig.RLock()
+	defer ig.RUnlock()
 
-	return d.buffer.Bytes()
+	return ig.buffer.Bytes()
 }
 
 // NeedsUpdate checks if the last update time is before the provided time for comparison.
-func (d *Display) NeedsUpdate(check time.Time) bool {
-	d.RLock()
-	defer d.RUnlock()
+func (ig *ImageGenerator) NeedsUpdate(check time.Time) bool {
+	ig.RLock()
+	defer ig.RUnlock()
 
-	return d.lastUpdate.Before(check)
+	return ig.lastUpdate.Before(check)
 }
 
 // Refresh generates a new image based on the provided SensorDataMessage
 // It updates the display buffer with the new image and sets the last update time
-func (d *Display) Refresh(last *SensorDataMessage) error {
-	d.Lock()
-	defer d.Unlock()
+func (ig *ImageGenerator) Refresh(last *SensorDataMessage) error {
+	ig.Lock()
+	defer ig.Unlock()
 
-	slog.Debug("Refreshing image", "temperatur", last.Temperature.String(), "date_time", last.MessageDate.String())
+	slog.Debug("Refreshing image", "temperature", last.Temperature.String(), "date_time", last.MessageDate.String())
 
-	img, err := d.generateImage(d.width, d.height, last.Temperature.String(), last.MessageDate.String())
+	img, err := ig.generateImage(ig.width, ig.height, last.Temperature.String(), last.MessageDate.String())
 	if err != nil {
 		return err
 	}
 
-	d.buffer.Reset()
-	err = png.Encode(d.buffer, img)
+	ig.buffer.Reset()
+	err = png.Encode(ig.buffer, img)
 	if err != nil {
 		return err
 	}
 
-	d.lastUpdate = time.Time(last.MessageDate)
+	ig.lastUpdate = time.Time(last.MessageDate)
 
 	return nil
 }

@@ -9,7 +9,7 @@ import (
 )
 
 func FiberApp(cfg *Config, sm *StateManager, monnit *Monnit) *fiber.App {
-	display := NewDisplay(cfg.ImageWidth, cfg.ImageHeight, GenerateDisplayImage)
+	display := NewImageGenerator(cfg.ImageWidth, cfg.ImageHeight, GenerateDisplayImage)
 
 	engine := html.New("./views", ".html")
 
