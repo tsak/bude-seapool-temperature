@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gofiber/fiber/v2/log"
 	"log/slog"
+	"os"
 )
 
 //TIP To run your code, right-click the code and select <b>Run</b>. Alternatively, click
@@ -14,6 +15,11 @@ func main() {
 	if cfg.Debug {
 		slog.SetLogLoggerLevel(slog.LevelDebug)
 		slog.Debug("config", "config", cfg)
+	}
+
+	if cfg.SensorId == "" || cfg.ApiKeyId == "" || cfg.ApiSecretKey == "" || cfg.ApiUrl == "" {
+		slog.Error("missing configuration", "config", cfg)
+		os.Exit(1)
 	}
 
 	// Initiate sensor reader
