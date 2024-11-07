@@ -9,7 +9,7 @@ import (
 )
 
 func FiberApp(cfg *Config, sm *StateManager, monnit *Monnit) *fiber.App {
-	display := NewImageGenerator(cfg.ImageWidth, cfg.ImageHeight, GenerateDisplayImage)
+	displayGenerator := NewImageGenerator(cfg.ImageWidth, cfg.ImageHeight, GenerateDisplayImage)
 
 	engine := html.New("./views", ".html")
 
@@ -36,9 +36,9 @@ func FiberApp(cfg *Config, sm *StateManager, monnit *Monnit) *fiber.App {
 		last := monnit.LastReading()
 
 		// Refresh image if stale
-		if display.NeedsUpdate(time.Time(last.MessageDate)) {
-			slog.Debug("Stale image", "update", display.lastUpdate, "current", time.Time(last.MessageDate))
-			err := display.Refresh(last)
+		if displayGenerator.NeedsUpdate(time.Time(last.MessageDate)) {
+			slog.Debug("Stale image", "update", displayGenerator.lastUpdate, "current", time.Time(last.MessageDate))
+			err := displayGenerator.Refresh(last)
 			if err != nil {
 				slog.Warn("Unable to refresh image", "error", err)
 				return c.Status(500).SendString(err.Error())
@@ -48,7 +48,7 @@ func FiberApp(cfg *Config, sm *StateManager, monnit *Monnit) *fiber.App {
 		sm.IncrementImageRequests()
 		c.Set("Cache-Control", "no-cache")
 		c.Set("Content-Type", "image/png")
-		return c.Send(display.GetImageBytes())
+		return c.Send(displayGenerator.GetImageBytes())
 
 	})
 
