@@ -11,6 +11,7 @@ import (
 func FiberApp(cfg *Config, sm *StateManager, monnit *Monnit) *fiber.App {
 	displayGenerator := NewImageGenerator(cfg.ImageWidth, cfg.ImageHeight, GenerateDisplayImage)
 	websiteImageGenerator := NewImageGenerator(300, 125, GenerateWebsiteImage)
+	tinyImageGenerator := NewImageGenerator(100, 50, GenerateTinyImage)
 
 	engine := html.New("./views", ".html")
 
@@ -70,6 +71,26 @@ func FiberApp(cfg *Config, sm *StateManager, monnit *Monnit) *fiber.App {
 		c.Set("Cache-Control", "no-cache")
 		c.Set("Content-Type", "image/png")
 		return c.Send(websiteImageGenerator.GetImageBytes())
+
+	})
+
+	app.Get("/tiny.png", func(c *fiber.Ctx) error {
+		last := monnit.LastReading()
+
+		// Refresh image if stale
+		if tinyImageGenerator.NeedsUpdate(time.Time(last.MessageDate)) {
+			slog.Debug("Stale tiny image", "update", tinyImageGenerator.lastUpdate, "current", time.Time(last.MessageDate))
+			err := tinyImageGenerator.Refresh(last)
+			if err != nil {
+				slog.Warn("Unable to refresh tiny image", "error", err)
+				return c.Status(500).SendString(err.Error())
+			}
+		}
+
+		sm.IncrementImageRequests()
+		c.Set("Cache-Control", "no-cache")
+		c.Set("Content-Type", "image/png")
+		return c.Send(tinyImageGenerator.GetImageBytes())
 
 	})
 
