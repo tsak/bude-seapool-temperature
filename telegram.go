@@ -8,8 +8,12 @@ import (
 	"log/slog"
 )
 
-func StartTelegramBot(sm *StateManager, monnit *Monnit, ctx context.Context, token string) error {
-	b, err := bot.New(token)
+func StartTelegramBot(sm *StateManager, monnit *Monnit, token string) error {
+	options := []bot.Option{
+		bot.WithSkipGetMe(),
+		bot.WithNotAsyncHandlers(),
+	}
+	b, err := bot.New(token, options...)
 	if err != nil {
 		return err
 	}
@@ -18,7 +22,7 @@ func StartTelegramBot(sm *StateManager, monnit *Monnit, ctx context.Context, tok
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/help", bot.MatchTypeExact, startHandler)
 	b.RegisterHandler(bot.HandlerTypeMessageText, "/temp", bot.MatchTypeExact, getTemperatureHandler(sm, monnit))
 
-	b.Start(ctx)
+	b.Start(context.TODO())
 
 	return nil
 }

@@ -1,11 +1,9 @@
 package main
 
 import (
-	"context"
 	"github.com/gofiber/fiber/v2/log"
 	"log/slog"
 	"os"
-	"os/signal"
 )
 
 //TIP To run your code, right-click the code and select <b>Run</b>. Alternatively, click
@@ -36,12 +34,9 @@ func main() {
 
 	// Initialise Telegram bot
 	if cfg.TelegramToken != "" {
-		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
-		defer cancel()
-
 		go func() {
 			slog.Info("starting Telegram bot")
-			err := StartTelegramBot(sm, monnit, ctx, cfg.TelegramToken)
+			err := StartTelegramBot(sm, monnit, cfg.TelegramToken)
 			if err != nil {
 				slog.Error("unable to start Telegram bot")
 				os.Exit(1)
