@@ -14,6 +14,7 @@ type State struct {
 	LastRequest   time.Time
 	ImageRedraws  int
 	ImageRequests int
+	BotRequests   int
 }
 
 func (s State) LogValue() slog.Value {
@@ -112,4 +113,10 @@ func (sm *StateManager) IncrementImageRequests() {
 	sm.Lock()
 	defer sm.Unlock()
 	sm.state.ImageRequests++
+}
+
+func (sm *StateManager) IncrementBotRequests() {
+	sm.Lock()
+	defer sm.Unlock()
+	sm.state.BotRequests++
 }

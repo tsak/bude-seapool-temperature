@@ -1,6 +1,7 @@
 package main
 
 import (
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/gofiber/fiber/v2/log"
 	"log/slog"
 	"os"
@@ -32,6 +33,17 @@ func main() {
 	}
 	slog.Debug("loaded application state", "state", sm.state, "filename", sm.filename)
 
+	// Initialise Telegram bot
+	if cfg.TelegramToken != "" {
+		bot, err := tgbotapi.NewBotAPI(cfg.TelegramToken)
+		if err != nil {
+			slog.Error("unable to initialise Telegram bot", "error", err)
+			os.Exit(1)
+		}
+		//bot.Debug = cfg.Debug
+		slog.Info("became Telegram bot", "user", bot.Self.UserName)
+		go TelegramBot(bot, sm, monnit)
+	}
 	// Set up Fiber app
 	app := FiberApp(cfg, sm, monnit)
 

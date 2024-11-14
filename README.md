@@ -49,6 +49,14 @@ $ curl -s https://spt.tsak.dev/api/v1/temperatures
 ]
 ```
 
+## Telegram bot
+
+If a valid Telegram Bot API token is set in `TELEGRAM_TOKEN`, connect to the Telegram Bot API and listen to commands.
+
+Try the bot [here](https://t.me/BudeSeapoolBot).
+
+![Telegram Bot screenshot](telegram-bot.jpg)
+
 ## Prerequisites
 
 - Go 1.23
