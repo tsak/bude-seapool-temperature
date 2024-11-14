@@ -9,11 +9,7 @@ import (
 )
 
 func StartTelegramBot(sm *StateManager, monnit *Monnit, token string) error {
-	options := []bot.Option{
-		bot.WithSkipGetMe(),
-		bot.WithNotAsyncHandlers(),
-	}
-	b, err := bot.New(token, options...)
+	b, err := bot.New(token)
 	if err != nil {
 		return err
 	}
