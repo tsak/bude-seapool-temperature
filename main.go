@@ -36,7 +36,7 @@ func main() {
 	if cfg.TelegramToken != "" {
 		go func() {
 			slog.Info("starting Telegram bot")
-			err := StartTelegramBot(sm, monnit, cfg.TelegramToken)
+			err := StartTelegramBot(sm, monnit, cfg)
 			if err != nil {
 				slog.Error("unable to start Telegram bot")
 				os.Exit(1)

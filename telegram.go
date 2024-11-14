@@ -6,10 +6,21 @@ import (
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 	"log/slog"
+	"net/http"
+	"time"
 )
 
-func StartTelegramBot(sm *StateManager, monnit *Monnit, token string) error {
-	b, err := bot.New(token)
+func StartTelegramBot(sm *StateManager, monnit *Monnit, cfg *Config) error {
+	options := []bot.Option{
+		bot.WithHTTPClient(5*time.Second, &http.Client{
+			Timeout: 5 * time.Second,
+		}),
+	}
+	if cfg.Debug {
+		options = append(options, bot.WithDebug())
+	}
+
+	b, err := bot.New(cfg.TelegramToken)
 	if err != nil {
 		return err
 	}
