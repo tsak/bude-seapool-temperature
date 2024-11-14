@@ -132,6 +132,18 @@ func (m *Monnit) LastReading() *SensorDataMessage {
 	return m.lastData.GetLast()
 }
 
+// ToApiResponse converts the Monnit's last sensor data messages to an ApiResponse format containing API messages.
+func (m *Monnit) ToApiResponse() ApiResponse {
+	m.RLock()
+	defer m.RUnlock()
+
+	var apiMessages []ApiMessage
+	for _, m := range m.lastData.Messages {
+		apiMessages = append(apiMessages, m.ToApiMessage())
+	}
+	return apiMessages
+}
+
 // SensorDataMessages represents the structure for sensor data communication.
 // It contains the method used and a slice of SensorDataMessage structs.
 type SensorDataMessages struct {
@@ -172,4 +184,12 @@ func (m SensorDataMessage) LogValue() slog.Value {
 		slog.String("temperature", m.Temperature.String()),
 		slog.Int("signal_strength", m.SignalStrength),
 	)
+}
+
+// ToApiMessage converts a SensorDataMessage to an ApiMessage, mapping relevant fields such as temperature and date.
+func (m *SensorDataMessage) ToApiMessage() ApiMessage {
+	return ApiMessage{
+		Temperature:  m.Temperature,
+		LastModified: m.MessageDate,
+	}
 }

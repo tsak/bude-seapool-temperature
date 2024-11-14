@@ -22,6 +22,12 @@ func (t *Temperature) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// MarshalJSON formats a temperature value as a stringified float with one decimal.
+func (t *Temperature) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("%.1f", *t)), nil
+}
+
+// String formats the Temperature value as a string with one decimal place, followed by the Celsius symbol (°C).
 func (t *Temperature) String() string {
 	return fmt.Sprintf("%.1f°C", *t)
 }

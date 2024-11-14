@@ -34,6 +34,18 @@ func FiberApp(cfg *Config, sm *StateManager, monnit *Monnit) *fiber.App {
 		})
 	})
 
+	// Public API endpoint to get latest temperature
+	app.Get("/api/v1/temperature", func(c *fiber.Ctx) error {
+		last := monnit.LastReading().ToApiMessage()
+		return c.JSON(&last)
+	})
+
+	// Public API endpoint to get a list of the last readings returned by Monnit
+	app.Get("/api/v1/temperatures", func(c *fiber.Ctx) error {
+		apiResponse := monnit.ToApiResponse()
+		return c.JSON(apiResponse)
+	})
+
 	app.Get("/temperature.png", func(c *fiber.Ctx) error {
 		last := monnit.LastReading()
 
