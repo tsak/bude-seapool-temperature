@@ -28,11 +28,11 @@ func GenerateTinyImage(width, height int, temperature, lastModified string) (ima
 	dc.SetRGBA(1, 1, 1, 0)
 	dc.Clear()
 
-	dc.DrawImage(thermometerImage, 8, 10)
+	dc.DrawImage(thermometerImage, 12, 10)
 
 	// Temperature display
-	dc.SetRGB(0, 0, 0)
-	if err := dc.LoadFontFace("fonts/Roboto-Regular.ttf", 20); err != nil {
+	dc.SetRGB(1, 1, 1)
+	if err := dc.LoadFontFace("fonts/Roboto-Medium.ttf", 16); err != nil {
 		slog.Error("unable to load font: ", "error", err)
 		return nil, err
 	}
