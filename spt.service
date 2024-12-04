@@ -1,0 +1,20 @@
+[Unit]
+Description=Bude Seapool Temperature
+ConditionPathExists=/home/spt
+After=network.target
+
+[Service]
+Type=simple
+User=spt
+Group=spt
+LimitNOFILE=1024
+
+Restart=on-failure
+RestartSec=10
+
+EnvironmentFile=/home/spt/.env
+WorkingDirectory=/home/spt
+ExecStart=/home/spt/bude-seapool-temperature
+
+[Install]
+WantedBy=multi-user.target
