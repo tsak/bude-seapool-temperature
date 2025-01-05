@@ -5,8 +5,6 @@ go 1.23.2
 require (
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/fogleman/gg v1.3.0
-	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
-	github.com/go-telegram/bot v1.10.1
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/gofiber/template/html/v2 v2.1.2
 	github.com/joho/godotenv v1.5.1

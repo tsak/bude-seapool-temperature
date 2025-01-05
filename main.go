@@ -32,19 +32,6 @@ func main() {
 	}
 	slog.Debug("loaded application state", "state", sm.state, "filename", sm.filename)
 
-	// Initialise Telegram bot
-	if cfg.TelegramToken != "" {
-		go func() {
-			slog.Info("starting Telegram bot")
-			err := StartTelegramBot(sm, monnit, cfg)
-			if err != nil {
-				slog.Error("unable to start Telegram bot")
-				os.Exit(1)
-			}
-			slog.Info("started Telegram bot")
-		}()
-	}
-
 	// Set up Fiber app
 	app := FiberApp(cfg, sm, monnit)
 

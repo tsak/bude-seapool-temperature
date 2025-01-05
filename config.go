@@ -30,8 +30,6 @@ type Config struct {
 	// Image height
 	ImageHeight int `env:"IMAGE_HEIGHT" envDefault:"1440"`
 
-	TelegramToken string `env:"TELEGRAM_TOKEN"`
-
 	// Address the webserver will listen on
 	Address string `env:"ADDRESS"`
 
@@ -54,7 +52,6 @@ func (c Config) LogValue() slog.Value {
 		slog.Int("image_width", c.ImageWidth),
 		slog.Int("image_height", c.ImageHeight),
 		slog.String("address", c.Address),
-		slog.Bool("telegram_token", c.TelegramToken != ""),
 		slog.String("state_file", c.StateFile),
 		slog.Duration("state_autosave_interval", c.StateAutosaveInterval),
 	)
