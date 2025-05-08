@@ -6,6 +6,7 @@ import (
 	"log/slog"
 )
 
+// GenerateDisplayImage generates the large display image that is displayed at the seapool
 func GenerateDisplayImage(width, height int, temperature, lastModified string) (image.Image, error) {
 	dc := gg.NewContext(width, height)
 
@@ -28,6 +29,26 @@ func GenerateDisplayImage(width, height int, temperature, lastModified string) (
 		return nil, err
 	}
 	dc.DrawStringAnchored("Last updated "+lastModified, float64(width)/2, float64(height)-100, 0.5, 0.5)
+
+	return dc.Image(), nil
+}
+
+// GenerateMaintenanceDisplayImage generates a large image with the "Annual maintenance" message
+func GenerateMaintenanceDisplayImage(width, height int, temperature, lastModified string) (image.Image, error) {
+	dc := gg.NewContext(width, height)
+
+	// White background
+	dc.SetRGB(1, 1, 1)
+	dc.Clear()
+
+	// Temperature display
+	dc.SetRGB(0.5, 0.5, 0.5)
+	if err := dc.LoadFontFace("fonts/Roboto-Regular.ttf", 400); err != nil {
+		slog.Error("unable to load font: ", "error", err)
+		return nil, err
+	}
+	dc.DrawStringAnchored("Annual", float64(width)/2, float64(height)/2, 0.5, -0.25)
+	dc.DrawStringAnchored("Maintenance", float64(width)/2, float64(height)/2, 0.5, 1.25)
 
 	return dc.Image(), nil
 }

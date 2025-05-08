@@ -14,6 +14,13 @@ func FiberApp(cfg *Config, sm *StateManager, monnit *Monnit) *fiber.App {
 	generators["website"] = NewImageGenerator(300, 125, GenerateWebsiteImage)
 	generators["tiny"] = NewImageGenerator(100, 50, GenerateTinyImage)
 
+	// In maintenance mode, use maintenance image generators instead
+	if cfg.Maintenance {
+		generators["temperature"] = NewImageGenerator(cfg.ImageWidth, cfg.ImageHeight, GenerateMaintenanceDisplayImage)
+		generators["website"] = NewImageGenerator(300, 125, GenerateMaintenanceWebsiteImage)
+		generators["tiny"] = NewImageGenerator(100, 50, GenerateMaintenanceTinyImage)
+	}
+
 	engine := html.New("./views", ".html")
 
 	app := fiber.New(fiber.Config{

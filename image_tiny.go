@@ -21,10 +21,11 @@ func init() {
 	}
 }
 
+// GenerateTinyImage generates a small image that is displayed on https://www.budeseapool.org/
 func GenerateTinyImage(width, height int, temperature, lastModified string) (image.Image, error) {
 	dc := gg.NewContext(width, height)
 
-	// White background
+	// Transparent background
 	dc.SetRGBA(1, 1, 1, 0)
 	dc.Clear()
 
@@ -38,6 +39,17 @@ func GenerateTinyImage(width, height int, temperature, lastModified string) (ima
 	}
 
 	dc.DrawStringAnchored(temperature, float64(width)/2+8, float64(height)/2, 0.5, 0.5)
+
+	return dc.Image(), nil
+}
+
+// GenerateMaintenanceTinyImage generates a transparent image during the annual cleanup
+func GenerateMaintenanceTinyImage(width, height int, temperature, lastModified string) (image.Image, error) {
+	dc := gg.NewContext(width, height)
+
+	// Transparent background
+	dc.SetRGBA(1, 1, 1, 0)
+	dc.Clear()
 
 	return dc.Image(), nil
 }
