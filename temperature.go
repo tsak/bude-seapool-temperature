@@ -14,10 +14,8 @@ func (t *Temperature) UnmarshalJSON(b []byte) error {
 	s := string(b)
 	s = strings.TrimPrefix(s, `"`)
 	s = strings.TrimSuffix(s, `"`)
-	f, err := strconv.ParseFloat(s, 64)
-	if err != nil {
-		return err
-	}
+	// Deliberately ignoring parse errors here
+	f, _ := strconv.ParseFloat(s, 64)
 	*t = Temperature(f)
 	return nil
 }
