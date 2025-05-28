@@ -4,10 +4,11 @@ import (
 	"github.com/fogleman/gg"
 	"image"
 	"log/slog"
+	"strings"
 )
 
 // GenerateWebsiteImage generates a smaller image for websites.
-func GenerateWebsiteImage(width, height int, temperature, lastModified string) (image.Image, error) {
+func GenerateWebsiteImage(width, height int, temperature, lastModified, msg string) (image.Image, error) {
 	dc := gg.NewContext(width, height)
 
 	// White background
@@ -35,7 +36,7 @@ func GenerateWebsiteImage(width, height int, temperature, lastModified string) (
 }
 
 // GenerateMaintenanceWebsiteImage generates a smaller image with an "Annual maintenance" message.
-func GenerateMaintenanceWebsiteImage(width, height int, temperature, lastModified string) (image.Image, error) {
+func GenerateMaintenanceWebsiteImage(width, height int, temperature, lastModified, msg string) (image.Image, error) {
 	dc := gg.NewContext(width, height)
 
 	// White background
@@ -48,7 +49,7 @@ func GenerateMaintenanceWebsiteImage(width, height int, temperature, lastModifie
 		slog.Error("unable to load font: ", "error", err)
 		return nil, err
 	}
-	dc.DrawStringAnchored("Annual maintenance", float64(width)/2, float64(height)/2, 0.5, 0.5)
+	dc.DrawStringAnchored(strings.Replace(msg, "\n", " ", -1), float64(width)/2, float64(height)/2, 0.5, 0.5)
 
 	return dc.Image(), nil
 }

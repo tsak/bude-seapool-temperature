@@ -14,16 +14,18 @@ type ImageGenerator struct {
 	sync.RWMutex
 	width         int
 	height        int
+	msg           string
 	buffer        *bytes.Buffer
 	lastUpdate    time.Time
-	generateImage func(width, height int, temperature, lastModified string) (image.Image, error)
+	generateImage func(width, height int, temperature, lastModified, msg string) (image.Image, error)
 }
 
 // NewImageGenerator creates a new display with the specified width and height, initializing the display buffer.
-func NewImageGenerator(width, height int, generateImage func(width, height int, temperature, lastModified string) (image.Image, error)) *ImageGenerator {
+func NewImageGenerator(width, height int, msg string, generateImage func(width, height int, temperature, lastModified, msg string) (image.Image, error)) *ImageGenerator {
 	return &ImageGenerator{
 		width:         width,
 		height:        height,
+		msg:           msg,
 		buffer:        bytes.NewBuffer([]byte{}),
 		generateImage: generateImage,
 	}
@@ -54,7 +56,7 @@ func (ig *ImageGenerator) Refresh(last *SensorDataMessage) error {
 
 	slog.Debug("Refreshing image", "temperature", last.Temperature.String(), "date_time", last.MessageDate.String())
 
-	img, err := ig.generateImage(ig.width, ig.height, last.Temperature.String(), last.MessageDate.String())
+	img, err := ig.generateImage(ig.width, ig.height, last.Temperature.String(), last.MessageDate.String(), ig.msg)
 	if err != nil {
 		return err
 	}

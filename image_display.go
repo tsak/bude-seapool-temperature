@@ -4,10 +4,11 @@ import (
 	"github.com/fogleman/gg"
 	"image"
 	"log/slog"
+	"strings"
 )
 
 // GenerateDisplayImage generates the large display image that is displayed at the seapool
-func GenerateDisplayImage(width, height int, temperature, lastModified string) (image.Image, error) {
+func GenerateDisplayImage(width, height int, temperature, lastModified, msg string) (image.Image, error) {
 	dc := gg.NewContext(width, height)
 
 	// White background
@@ -34,7 +35,7 @@ func GenerateDisplayImage(width, height int, temperature, lastModified string) (
 }
 
 // GenerateMaintenanceDisplayImage generates a large image with the "Annual maintenance" message
-func GenerateMaintenanceDisplayImage(width, height int, temperature, lastModified string) (image.Image, error) {
+func GenerateMaintenanceDisplayImage(width, height int, temperature, lastModified, msg string) (image.Image, error) {
 	dc := gg.NewContext(width, height)
 
 	// White background
@@ -47,8 +48,14 @@ func GenerateMaintenanceDisplayImage(width, height int, temperature, lastModifie
 		slog.Error("unable to load font: ", "error", err)
 		return nil, err
 	}
-	dc.DrawStringAnchored("Annual", float64(width)/2, float64(height)/2, 0.5, -0.25)
-	dc.DrawStringAnchored("Maintenance", float64(width)/2, float64(height)/2, 0.5, 1.25)
+	parts := strings.Split(msg, "\n")
+	switch len(parts) {
+	case 2:
+		dc.DrawStringAnchored(parts[0], float64(width)/2, float64(height)/2, 0.5, -0.25)
+		dc.DrawStringAnchored(parts[1], float64(width)/2, float64(height)/2, 0.5, 1.25)
+	case 1:
+		dc.DrawStringAnchored(parts[0], float64(width)/2, float64(height)/2, 0.5, 0.5)
+	}
 
 	return dc.Image(), nil
 }

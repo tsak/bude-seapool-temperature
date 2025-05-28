@@ -10,15 +10,15 @@ import (
 
 func FiberApp(cfg *Config, sm *StateManager, monnit *Monnit) *fiber.App {
 	generators := make(map[string]*ImageGenerator)
-	generators["temperature"] = NewImageGenerator(cfg.ImageWidth, cfg.ImageHeight, GenerateDisplayImage)
-	generators["website"] = NewImageGenerator(300, 125, GenerateWebsiteImage)
-	generators["tiny"] = NewImageGenerator(100, 50, GenerateTinyImage)
+	generators["temperature"] = NewImageGenerator(cfg.ImageWidth, cfg.ImageHeight, "", GenerateDisplayImage)
+	generators["website"] = NewImageGenerator(300, 125, "", GenerateWebsiteImage)
+	generators["tiny"] = NewImageGenerator(100, 50, "", GenerateTinyImage)
 
 	// In maintenance mode, use maintenance image generators instead
-	if cfg.Maintenance {
-		generators["temperature"] = NewImageGenerator(cfg.ImageWidth, cfg.ImageHeight, GenerateMaintenanceDisplayImage)
-		generators["website"] = NewImageGenerator(300, 125, GenerateMaintenanceWebsiteImage)
-		generators["tiny"] = NewImageGenerator(100, 50, GenerateMaintenanceTinyImage)
+	if cfg.MaintenanceMessage != "" {
+		generators["temperature"] = NewImageGenerator(cfg.ImageWidth, cfg.ImageHeight, cfg.MaintenanceMessage, GenerateMaintenanceDisplayImage)
+		generators["website"] = NewImageGenerator(300, 125, cfg.MaintenanceMessage, GenerateMaintenanceWebsiteImage)
+		generators["tiny"] = NewImageGenerator(100, 50, cfg.MaintenanceMessage, GenerateMaintenanceTinyImage)
 	}
 
 	engine := html.New("./views", ".html")

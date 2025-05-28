@@ -22,7 +22,7 @@ func init() {
 }
 
 // GenerateTinyImage generates a small image that is displayed on https://www.budeseapool.org/
-func GenerateTinyImage(width, height int, temperature, lastModified string) (image.Image, error) {
+func GenerateTinyImage(width, height int, temperature, lastModified, msg string) (image.Image, error) {
 	dc := gg.NewContext(width, height)
 
 	// Transparent background
@@ -44,7 +44,7 @@ func GenerateTinyImage(width, height int, temperature, lastModified string) (ima
 }
 
 // GenerateMaintenanceTinyImage generates a transparent image during the annual cleanup
-func GenerateMaintenanceTinyImage(width, height int, temperature, lastModified string) (image.Image, error) {
+func GenerateMaintenanceTinyImage(width, height int, temperature, lastModified, msg string) (image.Image, error) {
 	dc := gg.NewContext(width, height)
 
 	// Transparent background

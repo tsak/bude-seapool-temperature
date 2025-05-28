@@ -42,8 +42,8 @@ type Config struct {
 	// Debug mode
 	Debug bool `env:"DEBUG" envDefault:"false"`
 
-	// Maintenance mode for the yearly pool cleaning
-	Maintenance bool `env:"MAINTENANCE" envDefault:"false"`
+	// If a maintenance message is set, we display that instead of the temperature
+	MaintenanceMessage string `env:"MAINTENANCE_MESSAGE"`
 }
 
 func (c Config) LogValue() slog.Value {
@@ -57,7 +57,7 @@ func (c Config) LogValue() slog.Value {
 		slog.String("address", c.Address),
 		slog.String("state_file", c.StateFile),
 		slog.Duration("state_autosave_interval", c.StateAutosaveInterval),
-		slog.Bool("maintenance", c.Maintenance),
+		slog.String("maintenance_message", c.MaintenanceMessage),
 	)
 }
 
