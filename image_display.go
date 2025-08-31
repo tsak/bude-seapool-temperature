@@ -15,7 +15,7 @@ func GenerateDisplayImage(width, height int, temperature, lastModified, msg stri
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
 
-	dc.SetRGB(0.65, 0.65, 0.65)
+	dc.SetRGB(0.3, 0.3, 0.3)
 	if err := dc.LoadFontFace("fonts/Roboto-Bold.ttf", 400); err != nil {
 		slog.Error("unable to load font: ", "error", err)
 		return nil, err
