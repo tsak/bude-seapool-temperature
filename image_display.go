@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/fogleman/gg"
 	"image"
 	"log/slog"
 	"strings"
+
+	"github.com/fogleman/gg"
 )
 
 // GenerateDisplayImage generates the large display image that is displayed at the seapool
@@ -62,6 +63,8 @@ func GenerateMaintenanceDisplayImage(width, height int, temperature, lastModifie
 		dc.DrawStringAnchored(parts[1], float64(width)/2, float64(height)/2, 0.5, 1.25)
 	case 1:
 		dc.DrawStringAnchored(parts[0], float64(width)/2, float64(height)/2, 0.5, 0.5)
+	default:
+		dc.DrawStringWrapped(strings.ReplaceAll(msg, "\n", " "), 50, 50, 0, 0, float64(width-100), 1.7, gg.AlignCenter)
 	}
 
 	return dc.Image(), nil

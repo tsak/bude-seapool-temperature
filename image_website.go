@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/fogleman/gg"
 	"image"
 	"log/slog"
 	"strings"
+
+	"github.com/fogleman/gg"
 )
 
 // GenerateWebsiteImage generates a smaller image for websites.
@@ -49,7 +50,9 @@ func GenerateMaintenanceWebsiteImage(width, height int, temperature, lastModifie
 		slog.Error("unable to load font: ", "error", err)
 		return nil, err
 	}
-	dc.DrawStringAnchored(strings.Replace(msg, "\n", " ", -1), float64(width)/2, float64(height)/2, 0.5, 0.5)
+	msg = strings.Replace(msg, "\n", " ", -1)
+	padding := 13
+	dc.DrawStringWrapped(msg, float64(padding), float64(padding), 0, 0, float64(width-2*padding), 1.7, gg.AlignCenter)
 
 	return dc.Image(), nil
 }
