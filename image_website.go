@@ -50,7 +50,7 @@ func GenerateMaintenanceWebsiteImage(width, height int, temperature, lastModifie
 		slog.Error("unable to load font: ", "error", err)
 		return nil, err
 	}
-	msg = strings.Replace(msg, "\n", " ", -1)
+	msg = strings.Replace(msg, "#", " ", -1)
 	padding := 13
 	dc.DrawStringWrapped(msg, float64(padding), float64(padding), 0, 0, float64(width-2*padding), 1.7, gg.AlignCenter)
 

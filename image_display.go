@@ -56,7 +56,7 @@ func GenerateMaintenanceDisplayImage(width, height int, temperature, lastModifie
 		slog.Error("unable to load font: ", "error", err)
 		return nil, err
 	}
-	parts := strings.Split(msg, "\n")
+	parts := strings.Split(msg, "#")
 	switch len(parts) {
 	case 2:
 		dc.DrawStringAnchored(parts[0], float64(width)/2, float64(height)/2, 0.5, -0.25)
@@ -64,7 +64,7 @@ func GenerateMaintenanceDisplayImage(width, height int, temperature, lastModifie
 	case 1:
 		dc.DrawStringAnchored(parts[0], float64(width)/2, float64(height)/2, 0.5, 0.5)
 	default:
-		dc.DrawStringWrapped(strings.ReplaceAll(msg, "\n", " "), 50, 50, 0, 0, float64(width-100), 1.7, gg.AlignCenter)
+		dc.DrawStringWrapped(strings.ReplaceAll(msg, "#", " "), 50, 50, 0, 0, float64(width-100), 1.7, gg.AlignCenter)
 	}
 
 	return dc.Image(), nil
